@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require_relative "../config/environment"
+require "grpc"
+require_relative "../app/services/buddy_discovery_grpc_service"
+
+server = GRPC::RpcServer.new
+server.add_http2_port(ENV.fetch("GRPC_BIND", "0.0.0.0:50051"), :this_port_is_insecure)
+server.handle(BuddyDiscoveryGrpcService)
+
+%w[INT TERM].each do |signal|
+  Signal.trap(signal) { server.stop }
+end
+
+server.run_till_terminated
