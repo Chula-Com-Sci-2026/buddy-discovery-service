@@ -1,0 +1,25 @@
+meta {
+  name: 04 Respond To Buddy Request
+  type: grpc
+  seq: 4
+}
+
+grpc {
+  url: {{grpcUrl}}
+  method: /buddy_discovery.v1.BuddyDiscoveryService/RespondToBuddyRequest
+  body: grpc
+  auth: none
+  methodType: unary
+  protoPath: proto/buddy_discovery/v1/buddy_discovery.proto
+}
+
+body:grpc {
+  name: message 1
+  content: '''
+    {
+      "id": "{{requestId}}",
+      "recipient_id": "44444444-4444-4444-8444-444444444444",
+      "decision": "accepted"
+    }
+  '''
+}

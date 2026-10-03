@@ -1,0 +1,41 @@
+meta {
+  name: 01 Send Buddy Request
+  type: grpc
+  seq: 1
+}
+
+grpc {
+  url: {{grpcUrl}}
+  method: /buddy_discovery.v1.BuddyDiscoveryService/SendBuddyRequest
+  body: grpc
+  protoPath: proto/buddy_discovery/v1/buddy_discovery.proto
+  auth: none
+  methodType: unary
+}
+
+body:grpc {
+  name: message 1
+  content: '''
+    {
+      "sender_id": "33333333-3333-4333-8333-333333333333",
+      "recipient_id": "44444444-4444-4444-8444-444444444444"
+    }
+  '''
+}
+
+script:grpc:after-message-receive {
+  const message = bru.grpc.response.message
+  if (message && message.data && message.data.id) {
+    bru.setEnvVar('requestId', String(message.data.id))
+  }
+}
+
+script:grpc:after-call-end {
+  test('creates a pending buddy request', function () {
+    expect(bru.grpc.response.statusCode).to.equal(0)
+  })
+}
+
+docs {
+  Creates a pending buddy request and saves the returned ID as `requestId`.
+}

@@ -1,0 +1,24 @@
+meta {
+  name: 03 List Buddy Requests
+  type: grpc
+  seq: 3
+}
+
+grpc {
+  url: {{grpcUrl}}
+  method: /buddy_discovery.v1.BuddyDiscoveryService/ListBuddyRequests
+  body: grpc
+  protoPath: proto/buddy_discovery/v1/buddy_discovery.proto
+  auth: none
+  methodType: unary
+}
+
+body:grpc {
+  name: message 1
+  content: '''
+    {
+      "runner_id": "44444444-4444-4444-8444-444444444444",
+      "status": "pending"
+    }
+  '''
+}

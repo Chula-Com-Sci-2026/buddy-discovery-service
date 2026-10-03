@@ -1,0 +1,24 @@
+meta {
+  name: 06 Cancel Buddy Request
+  type: grpc
+  seq: 6
+}
+
+grpc {
+  url: {{grpcUrl}}
+  method: /buddy_discovery.v1.BuddyDiscoveryService/CancelBuddyRequest
+  body: grpc
+  auth: none
+  methodType: unary
+  protoPath: proto/buddy_discovery/v1/buddy_discovery.proto
+}
+
+body:grpc {
+  name: message 1
+  content: '''
+    {
+      "id": "{{cancelRequestId}}",
+      "sender_id": "55555555-5555-4555-8555-555555555555"
+    }
+  '''
+}
