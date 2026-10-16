@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_28_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "buddy_relationships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "runner_a", null: false
+    t.uuid "runner_b", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["runner_a", "runner_b"], name: "index_buddy_relationships_on_runner_a_and_runner_b", unique: true
+  end
 
   create_table "buddy_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "sender_id", null: false
@@ -23,5 +31,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_28_170000) do
     t.index ["recipient_id"], name: "index_buddy_requests_on_recipient_id"
     t.index ["sender_id", "recipient_id"], name: "index_unique_pending_buddy_requests", unique: true, where: "((status)::text = 'pending'::text)"
     t.index ["sender_id"], name: "index_buddy_requests_on_sender_id"
+  end
+
+  create_table "outbox_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "event_type", null: false
+    t.jsonb "payload", null: false
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 end

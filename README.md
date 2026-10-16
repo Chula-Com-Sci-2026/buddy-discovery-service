@@ -1,6 +1,6 @@
 # Buddy Discovery Service
 
-Buddy Discovery Service is a gRPC microservice for the **Can't Run Alone** platform. It owns runner discovery, buddy requests, buddy relationships, blocking, and the candidate projection used for searching. This repository currently implements the first Deliverable 3 vertical slice: the complete lifecycle of a buddy request.
+Buddy Discovery Service is a gRPC microservice for the **Can't Run Alone** platform. It owns runner discovery, buddy requests, buddy relationships, blocking, and the candidate projection used for searching. The Deliverable 3 request lifecycle is extended for Deliverable 4 with authenticated search, buddy relationships and broker-backed notifications.
 
 ## Current scope
 
@@ -16,7 +16,7 @@ The implemented gRPC operations provide CRUD-equivalent behavior:
 
 The service prevents self-requests, duplicate pending requests, unauthorized responses, unauthorized cancellation, and repeated responses.
 
-Runner search, buddy lists, blocking, PostGIS candidate projections, Kafka events, expiration jobs, and JWT authorization are planned but not implemented yet.
+Runner search delegates to the Profile API through `SearchRunners`; `ListBuddies` reads persisted relationships. Every RPC validates the JWT and resource ownership. Request creation/response writes a transactional outbox consumed by `bin/outbox-worker`, which publishes persistent RabbitMQ events. Blocking, PostGIS candidate projections, Kafka integration and expiration jobs remain deferred.
 
 ## Technology
 
@@ -42,6 +42,14 @@ buddy_discovery.v1.BuddyDiscoveryService
 ```
 
 Generated Ruby messages and service stubs are checked into `lib/buddy_discovery/v1/` so consumers and CI do not need to regenerate them.
+
+## Deliverable 4 integration and tests
+
+Use `../local-integration/README.md` for the full stack, generated local secrets, demo seeds, contract exports and all-service tests. JWT authorization is now required, including direct gRPC calls through `authorization: Bearer <token>` metadata. Set `JWT_SECRET` consistently with Identity and `PROFILE_URL` to the Profile API. The outbox worker additionally requires `BROKER_HTTP_URL`, `BROKER_USER` and `BROKER_PASSWORD`. The old Deliverable 3 commands below describe the transport shape but require authentication metadata on the current implementation.
+
+The full suite runs against real PostgreSQL. Test databases must be pre-created, then migrated explicitly: `RAILS_ENV=test bin/rails db:migrate` followed by `RAILS_ENV=test bin/rails test`. The integrated test runner provides those settings without giving application roles database-creation privileges.
+
+Regenerate Ruby protobuf bindings with `script/generate_proto.py` using Python grpcio-tools, or the existing Ruby compiler workflow below. Keep `../api-gateway/contracts/buddy_discovery.proto` identical to the source contract.
 
 ## Run locally
 

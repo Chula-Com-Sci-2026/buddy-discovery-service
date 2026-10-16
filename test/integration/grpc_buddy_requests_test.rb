@@ -12,11 +12,12 @@ class GrpcBuddyRequestsTest < ActiveSupport::TestCase
       "127.0.0.1:#{port}",
       :this_channel_is_insecure
     )
+    sender = SecureRandom.uuid
     response = stub.send_buddy_request(
       BuddyDiscovery::V1::SendBuddyRequestRequest.new(
-        sender_id: SecureRandom.uuid,
+        sender_id: sender,
         recipient_id: SecureRandom.uuid
-      )
+      ), metadata: { "authorization" => token_for(sender) }
     )
 
     assert_equal "pending", response.status

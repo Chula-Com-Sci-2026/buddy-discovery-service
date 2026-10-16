@@ -1,0 +1,2 @@
+class BuddyRelationship < ApplicationRecord
+end
