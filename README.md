@@ -20,7 +20,7 @@ Runner search delegates to the Profile API through `SearchRunners`; `ListBuddies
 
 ## Technology
 
-- Ruby 3.4.6
+- Ruby 3.4.12
 - Rails 8.1.4 in API-only mode
 - gRPC Ruby 1.84.0 and Protocol Buffers
 - PostgreSQL 16
