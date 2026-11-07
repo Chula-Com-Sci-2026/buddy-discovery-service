@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+require_relative "../config/environment"
+require "net/http"
+require "json"
+
+loop do
+  begin
+    OutboxEvent.where(published_at: nil).order(:created_at).limit(20).each do |event|
+      event.with_lock do
+        next if event.published_at
+        uri = URI(ENV.fetch("BROKER_HTTP_URL") + "/api/exchanges/%2F/cra.events/publish")
+        request = Net::HTTP::Post.new(uri)
+        request.basic_auth(ENV.fetch("BROKER_USER"), ENV.fetch("BROKER_PASSWORD"))
+        request["Content-Type"] = "application/json"
+        request.body = { properties: { delivery_mode: 2, content_type: "application/json" }, routing_key: event.event_type,
+          payload: event.envelope.to_json, payload_encoding: "string" }.to_json
+        response = Net::HTTP.start(uri.hostname, uri.port, open_timeout: 3, read_timeout: 5) { |http| http.request(request) }
+        raise "broker did not route event" unless response.is_a?(Net::HTTPSuccess) && JSON.parse(response.body)["routed"]
+        event.update!(published_at: Time.current)
+      end
+    end
+  rescue StandardError => e
+    warn "Outbox retry: #{e.class}: #{e.message}"
+  end
+  sleep 2
+end

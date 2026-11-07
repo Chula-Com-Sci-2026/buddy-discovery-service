@@ -3,6 +3,8 @@ syntax = "proto3";
 package buddy_discovery.v1;
 
 service BuddyDiscoveryService {
+  rpc SearchRunners(SearchRunnersRequest) returns (SearchRunnersResponse);
+  rpc ListBuddies(ListBuddiesRequest) returns (ListBuddiesResponse);
   rpc SendBuddyRequest(SendBuddyRequestRequest) returns (BuddyRequest);
   rpc GetBuddyRequest(GetBuddyRequestRequest) returns (BuddyRequest);
   rpc ListBuddyRequests(ListBuddyRequestsRequest) returns (ListBuddyRequestsResponse);
@@ -49,3 +51,13 @@ message CancelBuddyRequestRequest {
 }
 
 message CancelBuddyRequestResponse {}
+
+message SearchRunnersRequest {
+  double radius_km = 1;
+  string experience = 2;
+  string pace = 3;
+  string availability = 4;
+}
+message SearchRunnersResponse { string runners_json = 1; }
+message ListBuddiesRequest {}
+message ListBuddiesResponse { repeated string runner_ids = 1; }

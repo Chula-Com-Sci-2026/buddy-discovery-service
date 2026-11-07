@@ -1,0 +1,23 @@
+meta {
+  name: 02 Get Buddy Request
+  type: grpc
+  seq: 2
+}
+
+grpc {
+  url: {{grpcUrl}}
+  method: /buddy_discovery.v1.BuddyDiscoveryService/GetBuddyRequest
+  body: grpc
+  protoPath: proto/buddy_discovery/v1/buddy_discovery.proto
+  auth: none
+  methodType: unary
+}
+
+body:grpc {
+  name: message 1
+  content: '''
+    {
+      "id": "{{requestId}}"
+    }
+  '''
+}

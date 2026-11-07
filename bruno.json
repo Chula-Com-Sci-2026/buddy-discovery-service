@@ -1,0 +1,25 @@
+{
+  "name": "Buddy Discovery Service - gRPC",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "size": 0.003692626953125,
+  "filesCount": 8,
+  "protobuf": {
+    "importPaths": [
+      {
+        "path": "proto",
+        "enabled": true
+      }
+    ],
+    "protoFiles": [
+      {
+        "path": "proto/buddy_discovery/v1/buddy_discovery.proto",
+        "type": "file"
+      }
+    ]
+  },
+  "version": "1"
+}

@@ -1,0 +1,35 @@
+meta {
+  name: 05 Send Cancellable Buddy Request
+  type: grpc
+  seq: 5
+}
+
+grpc {
+  url: {{grpcUrl}}
+  method: /buddy_discovery.v1.BuddyDiscoveryService/SendBuddyRequest
+  body: grpc
+  auth: none
+  methodType: unary
+  protoPath: proto/buddy_discovery/v1/buddy_discovery.proto
+}
+
+body:grpc {
+  name: message 1
+  content: '''
+    {
+      "sender_id": "55555555-5555-4555-8555-555555555555",
+      "recipient_id": "66666666-6666-4666-8666-666666666666"
+    }
+  '''
+}
+
+script:grpc:after-message-receive {
+  const message = bru.grpc.response.message
+  if (message && message.data && message.data.id) {
+    bru.setEnvVar('cancelRequestId', String(message.data.id))
+  }
+}
+
+docs {
+  Creates a second pending request and saves its ID as `cancelRequestId`.
+}
