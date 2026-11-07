@@ -45,7 +45,7 @@ Generated Ruby messages and service stubs are checked into `lib/buddy_discovery/
 
 ## Deliverable 4 integration and tests
 
-Use `../local-integration/README.md` for the full stack, generated local secrets, demo seeds, contract exports and all-service tests. JWT authorization is now required, including direct gRPC calls through `authorization: Bearer <token>` metadata. Set `JWT_SECRET` consistently with Identity and `PROFILE_URL` to the Profile API. The outbox worker additionally requires `BROKER_HTTP_URL`, `BROKER_USER` and `BROKER_PASSWORD`. The old Deliverable 3 commands below describe the transport shape but require authentication metadata on the current implementation.
+Use `../running-buddy-integration/README.md` for the full stack, generated local secrets, demo seeds, contract exports and all-service tests. JWT authorization is now required, including direct gRPC calls through `authorization: Bearer <token>` metadata. Set `JWT_SECRET` consistently with Identity and `PROFILE_URL` to the Profile API. The outbox worker additionally requires `BROKER_HTTP_URL`, `BROKER_USER` and `BROKER_PASSWORD`. The old Deliverable 3 commands below describe the transport shape but require authentication metadata on the current implementation.
 
 The full suite runs against real PostgreSQL. Test databases must be pre-created, then migrated explicitly: `RAILS_ENV=test bin/rails db:migrate` followed by `RAILS_ENV=test bin/rails test`. The integrated test runner provides those settings without giving application roles database-creation privileges.
 

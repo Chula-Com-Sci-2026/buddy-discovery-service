@@ -4,7 +4,14 @@ require_relative "../config/environment"
 require "grpc"
 require_relative "../app/services/buddy_discovery_grpc_service"
 
-server = GRPC::RpcServer.new
+# Optional: close each client connection after this age (GOAWAY, in-flight calls finish) so
+# long-lived clients reconnect and re-resolve DNS, picking up replicas added by scaling out.
+server_args = {}
+if ENV["GRPC_MAX_CONNECTION_AGE_MS"].present?
+  server_args["grpc.max_connection_age_ms"] = Integer(ENV["GRPC_MAX_CONNECTION_AGE_MS"])
+  server_args["grpc.max_connection_age_grace_ms"] = Integer(ENV.fetch("GRPC_MAX_CONNECTION_AGE_GRACE_MS", "10000"))
+end
+server = GRPC::RpcServer.new(server_args: server_args)
 server.add_http2_port(ENV.fetch("GRPC_BIND", "0.0.0.0:50051"), :this_port_is_insecure)
 server.handle(BuddyDiscoveryGrpcService)
 

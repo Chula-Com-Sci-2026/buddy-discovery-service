@@ -12,3 +12,7 @@
 !/tmp/.keep
 !/tmp/pids/.keep
 !/tmp/storage/.keep
+
+# Local crash dumps and macOS metadata
+/core
+.DS_Store
