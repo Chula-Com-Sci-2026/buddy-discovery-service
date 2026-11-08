@@ -78,7 +78,8 @@ class BuddyDiscoveryGrpcService < BuddyDiscovery::V1::BuddyDiscoveryService::Ser
     http_request = Net::HTTP::Get.new(uri)
     http_request["Authorization"] = call.metadata["authorization"]
     response = Net::HTTP.start(uri.hostname, uri.port, open_timeout: 3, read_timeout: 5) { |http| http.request(http_request) }
-    fail_rpc(GRPC::Core::StatusCodes::FAILED_PRECONDITION, "Create your runner profile before searching") if response.code == "409"
+    # Profile answers 404 when the caller has not saved a profile yet (running-buddy-contracts profile.openapi.json).
+    fail_rpc(GRPC::Core::StatusCodes::FAILED_PRECONDITION, "Create your runner profile before searching") if response.code == "404"
     fail_rpc(GRPC::Core::StatusCodes::UNAVAILABLE, "Profile search unavailable") unless response.is_a?(Net::HTTPSuccess)
     BuddyDiscovery::V1::SearchRunnersResponse.new(runners_json: response.body.force_encoding(Encoding::UTF_8))
   rescue IOError, SystemCallError, Timeout::Error
