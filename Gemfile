@@ -7,7 +7,7 @@ gem "pg", "~> 1.7"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 gem "grpc", "1.85.0"
-gem "grpc-tools", "1.84.0"
+gem "grpc-tools", "1.85.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
