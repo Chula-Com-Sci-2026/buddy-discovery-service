@@ -9,6 +9,13 @@ class BuddyRequestTest < ActiveSupport::TestCase
     assert_includes request.errors[:recipient_id], "cannot be the sender"
   end
 
+  test "keeps the note to 180 characters" do
+    request = BuddyRequest.new(sender_id: SecureRandom.uuid, recipient_id: SecureRandom.uuid, note: "a" * 181)
+
+    assert_not request.valid?
+    assert request.errors[:note].any?
+  end
+
   test "accepts a pending request" do
     request = BuddyRequest.create!(valid_attributes)
 

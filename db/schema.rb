@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_11_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,6 +28,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_160000) do
     t.string "status", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "note", limit: 180
     t.index ["recipient_id"], name: "index_buddy_requests_on_recipient_id"
     t.index ["sender_id", "recipient_id"], name: "index_unique_pending_buddy_requests", unique: true, where: "((status)::text = 'pending'::text)"
     t.index ["sender_id"], name: "index_buddy_requests_on_sender_id"

@@ -3,6 +3,7 @@ class BuddyRequest < ApplicationRecord
 
   validates :sender_id, :recipient_id, presence: true
   validates :status, inclusion: { in: STATUSES }
+  validates :note, length: { maximum: 180 }
   validates :recipient_id, uniqueness: {
     scope: :sender_id,
     conditions: -> { where(status: "pending") },
