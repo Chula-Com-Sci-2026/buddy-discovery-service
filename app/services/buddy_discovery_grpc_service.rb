@@ -11,7 +11,8 @@ class BuddyDiscoveryGrpcService < BuddyDiscovery::V1::BuddyDiscoveryService::Ser
     BuddyRequest.transaction do
       record = BuddyRequest.create!(
       sender_id: request.sender_id,
-      recipient_id: request.recipient_id
+      recipient_id: request.recipient_id,
+      note: request.note.strip.presence
     )
       OutboxEvent.create!(event_type: "BuddyRequestSent", payload: event_payload(record))
     end
@@ -124,7 +125,8 @@ class BuddyDiscoveryGrpcService < BuddyDiscovery::V1::BuddyDiscoveryService::Ser
       recipient_id: record.recipient_id,
       status: record.status,
       created_at: record.created_at.iso8601,
-      updated_at: record.updated_at.iso8601
+      updated_at: record.updated_at.iso8601,
+      note: record.note.to_s
     )
   end
 

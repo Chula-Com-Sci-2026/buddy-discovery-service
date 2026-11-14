@@ -16,12 +16,14 @@ class GrpcBuddyRequestsTest < ActiveSupport::TestCase
     response = stub.send_buddy_request(
       BuddyDiscovery::V1::SendBuddyRequestRequest.new(
         sender_id: sender,
-        recipient_id: SecureRandom.uuid
+        recipient_id: SecureRandom.uuid,
+        note: "  Evening 5K this week?  "
       ), metadata: { "authorization" => token_for(sender) }
     )
 
     assert_equal "pending", response.status
-    assert BuddyRequest.exists?(response.id)
+    assert_equal "Evening 5K this week?", response.note
+    assert_equal "Evening 5K this week?", BuddyRequest.find(response.id).note
   ensure
     server&.stop
     server_thread&.join
